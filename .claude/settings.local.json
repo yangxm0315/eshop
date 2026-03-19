@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan:*)",
+      "Bash(composer require:*)",
+      "Bash(npm install:*)",
+      "Bash(brew list:*)",
+      "Bash(which mysql:*)",
+      "Bash(npm run:*)",
+      "Bash(curl -s http://127.0.0.1:8000/admin/categories 2>&1 | head -100)",
+      "Bash(curl -s http://localhost:8000/cart 2>&1 | head -50)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/cart 2>&1)"
+    ]
+  }
+}
