@@ -68,7 +68,7 @@
     <header>
         <div class="container">
             <nav>
-                <a href="/" class="logo">原生 PHP 电商</a>
+                <a href="/" class="logo">云网商城</a>
                 <ul>
                     <li><a href="/">首页</a></li>
                     <li><a href="/products">商品</a></li>
@@ -111,7 +111,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; <?= date('Y') ?> 原生 PHP 电商 - 非 Laravel 实现</p>
+            <p>&copy; <?= date('Y') ?> 云网商城 - All rights reserved.</p>
         </div>
     </footer>
 </body>
