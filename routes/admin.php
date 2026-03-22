@@ -1,40 +1,40 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\CategoryController;
-use Illuminate\Support\Facades\Route;
+// 后台管理路由
+Core\Router::get('/admin', function() {
+    $session = Core\Session::getInstance();
+    if (!$session->isLoggedIn()) {
+        $session->flash('error', '请先登录');
+        $response = new Core\Response();
+        return $response->redirect('/login');
+    }
+    if (!$session->isAdmin()) {
+        $session->flash('error', '无权访问');
+        $response = new Core\Response();
+        return $response->redirect('/');
+    }
+    $controller = new Controllers\Admin\DashboardController();
+    return $controller->index();
+}, 'admin.dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-*/
+// 分类管理
+Core\Router::get('/admin/categories', [Controllers\Admin\CategoryController::class, 'index'], 'admin.categories.index');
+Core\Router::post('/admin/categories', [Controllers\Admin\CategoryController::class, 'store'], 'admin.categories.store');
+Core\Router::get('/admin/categories/{id}/edit', [Controllers\Admin\CategoryController::class, 'edit'], 'admin.categories.edit');
+Core\Router::post('/admin/categories/{id}/update', [Controllers\Admin\CategoryController::class, 'update'], 'admin.categories.update');
+Core\Router::post('/admin/categories/{id}/delete', [Controllers\Admin\CategoryController::class, 'destroy'], 'admin.categories.destroy');
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // 后台首页
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// 商品管理
+Core\Router::get('/admin/products', [Controllers\Admin\ProductController::class, 'index'], 'admin.products.index');
+Core\Router::get('/admin/products/create', [Controllers\Admin\ProductController::class, 'create'], 'admin.products.create');
+Core\Router::post('/admin/products', [Controllers\Admin\ProductController::class, 'store'], 'admin.products.store');
+Core\Router::get('/admin/products/{id}/edit', [Controllers\Admin\ProductController::class, 'edit'], 'admin.products.edit');
+Core\Router::post('/admin/products/{id}/update', [Controllers\Admin\ProductController::class, 'update'], 'admin.products.update');
+Core\Router::post('/admin/products/{id}/delete', [Controllers\Admin\ProductController::class, 'destroy'], 'admin.products.destroy');
+Core\Router::post('/admin/products/{id}/toggle', [Controllers\Admin\ProductController::class, 'toggleStatus'], 'admin.products.toggle');
 
-    // 分类管理
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-    Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-
-    // 商品管理
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-    Route::post('/products/{product}/toggle', [ProductController::class, 'toggleStatus'])->name('products.toggle');
-
-    // 订单管理
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{order}/ship', [OrderController::class, 'ship'])->name('orders.ship');
-    Route::post('/orders/{order}/complete', [OrderController::class, 'complete'])->name('orders.complete');
-});
+// 订单管理
+Core\Router::get('/admin/orders', [Controllers\Admin\OrderController::class, 'index'], 'admin.orders.index');
+Core\Router::get('/admin/orders/{id}', [Controllers\Admin\OrderController::class, 'show'], 'admin.orders.show');
+Core\Router::post('/admin/orders/{id}/ship', [Controllers\Admin\OrderController::class, 'ship'], 'admin.orders.ship');
+Core\Router::post('/admin/orders/{id}/complete', [Controllers\Admin\OrderController::class, 'complete'], 'admin.orders.complete');

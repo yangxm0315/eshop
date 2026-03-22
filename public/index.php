@@ -1,55 +1,47 @@
 <?php
 
-use Illuminate\Contracts\Http\Kernel;
-use Illuminate\Http\Request;
+/**
+ * 应用入口文件
+ */
 
-define('LARAVEL_START', microtime(true));
+// 错误报告
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-/*
-|--------------------------------------------------------------------------
-| Check If The Application Is Under Maintenance
-|--------------------------------------------------------------------------
-|
-| If the application is in maintenance / demo mode via the "down" command
-| we will load this file so that any pre-rendered content can be shown
-| instead of starting the framework, which could cause an exception.
-|
-*/
+// 定义基础路径
+define('BASE_PATH', dirname(__DIR__));
 
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
-    require $maintenance;
+// 自动加载
+spl_autoload_register(function ($class) {
+    $baseDir = BASE_PATH . '/src/';
+    
+    // 将命名空间转换为文件路径
+    $file = $baseDir . str_replace('\\', '/', $class) . '.php';
+    
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
+// 启动 Session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader for
-| this application. We just need to utilize it! We'll simply require it
-| into the script here so we don't need to manually load our classes.
-|
-*/
+// 加载路由文件
+require BASE_PATH . '/routes/web.php';
+require BASE_PATH . '/routes/auth.php';
+require BASE_PATH . '/routes/admin.php';
 
-require __DIR__.'/../vendor/autoload.php';
+// 分发请求
+$router = Core\Router::getInstance();
+$uri = $_SERVER['REQUEST_URI'];
+$method = $_SERVER['REQUEST_METHOD'];
 
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-|
-| Once we have the application, we can handle the incoming request using
-| the application's HTTP kernel. Then, we will send the response back
-| to this client's browser, allowing them to enjoy our application.
-|
-*/
+$response = $router->dispatch($uri, $method);
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
-
-$kernel = $app->make(Kernel::class);
-
-$response = $kernel->handle(
-    $request = Request::capture()
-)->send();
-
-$kernel->terminate($request, $response);
+if ($response instanceof Core\Response) {
+    $response->send();
+} else {
+    echo $response;
+}

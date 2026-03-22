@@ -9,7 +9,24 @@
       "Bash(npm run:*)",
       "Bash(curl -s http://127.0.0.1:8000/admin/categories 2>&1 | head -100)",
       "Bash(curl -s http://localhost:8000/cart 2>&1 | head -50)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/cart 2>&1)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/cart 2>&1)",
+      "Bash(ssh -T git@github.com)",
+      "Bash(rm -f /Users/xiaoming/eshop/database/database.sqlite)",
+      "Bash(php /Users/xiaoming/eshop/database/migrate.php)",
+      "Bash(lsof -ti:8000)",
+      "Bash(xargs kill:*)",
+      "Bash(php:*)",
+      "Bash(curl -s http://localhost:8000)",
+      "Bash(curl -s http://localhost:8000/products)",
+      "Bash(curl -s http://localhost:8000/login)",
+      "Bash(curl -s http://localhost:8000/admin)",
+      "Bash(curl -s -L http://localhost:8000/admin)",
+      "Bash(curl:*)",
+      "Bash(/Users/xiaoming/eshop/views/errors/404.php:*)",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(sed -i '' 's|include __DIR__ . ''''/../../layouts/admin\\\\.php''''|include BASE_PATH . ''''/views/layouts/admin.php''''|g' \"$f\")",
+      "Bash(done)"
     ]
   }
 }
