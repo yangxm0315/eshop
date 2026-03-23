@@ -109,8 +109,11 @@ class OrderController extends Controller
                 $db->insert('order_items', [
                     'order_id' => $orderId,
                     'product_id' => $item['product_id'],
+                    'product_name' => $item['name'],
+                    'product_image' => $item['main_image'],
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'total_price' => $item['price'] * $item['quantity'],
                 ]);
 
                 // 扣减库存
