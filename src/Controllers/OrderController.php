@@ -66,7 +66,7 @@ class OrderController extends Controller
         $db = Database::getInstance();
 
         // 获取购物车商品
-        $sql = "SELECT c.*, p.price, p.stock FROM cart c
+        $sql = "SELECT c.*, p.name, p.main_image, p.price, p.stock FROM cart c
                 JOIN products p ON c.product_id = p.id
                 WHERE c.user_id = :user_id";
         $cartItems = $db->query($sql, ['user_id' => $userId]);
