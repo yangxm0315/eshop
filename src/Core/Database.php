@@ -18,8 +18,8 @@ class Database
         $config = require __DIR__ . '/../../config/database.php';
 
         try {
-            //$dsn = "sqlite:" . $config['database']['sqlite'];
-            $dsn = "mysql:host={$config['database']['mysql']['host']};dbname={$config['database']['mysql']['dbname']};charset={$config['database']['mysql']['charset']}";
+            $dsn = "sqlite:" . $config['database']['sqlite'];
+            //$dsn = "mysql:host={$config['database']['mysql']['host']};dbname={$config['database']['mysql']['dbname']};charset={$config['database']['mysql']['charset']}";
             $this->connection = new PDO($dsn,
                 $config['database']['mysql']['username'] ?? null,
                 $config['database']['mysql']['password'] ?? null, [

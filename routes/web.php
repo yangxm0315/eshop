@@ -41,6 +41,11 @@ Router::post('/profile/update', [\Controllers\ProfileController::class, 'update'
 Router::post('/profile/addresses/create', [\Controllers\ProfileController::class, 'addAddress'], 'profile.addresses.create');
 Router::post('/profile/addresses/update/{id}', [\Controllers\ProfileController::class, 'updateAddress'], 'profile.addresses.update');
 Router::post('/profile/addresses/delete/{id}', [\Controllers\ProfileController::class, 'deleteAddress'], 'profile.addresses.delete');
+// 兼容旧版路径
+Router::post('/profile/address', [\Controllers\ProfileController::class, 'addAddress']);
+Router::post('/profile/address/{id}/delete', [\Controllers\ProfileController::class, 'deleteAddress']);
+Router::post('/profile/address/{id}/default', [\Controllers\ProfileController::class, 'setDefaultAddress']);
+Router::post('/profile/address/{id}/update', [\Controllers\ProfileController::class, 'updateAddress']);
 
 // 支付
 Router::get('/payment/{orderId}', [\Controllers\PaymentController::class, 'show'], 'payment.show');
