@@ -2,22 +2,49 @@
 
 namespace Payment;
 
+// 引入依赖库
+require_once('vendor/autoload.php');
+use WeChatPay\Builder;
+use WeChatPay\Crypto\Rsa;
+
 /**
  * 微信支付模拟类
  * 实际项目中需要接入真正的微信支付 API
  */
 class WechatPay
 {
+    private Builder $client;
     private string $appId;
     private string $mchId;
-    private string $apiKey;
+    private string $merchantCertificateSerial;
+    private string $platformCertificateSerial;
+    private string $platformPublicKeyId;
+    private Rsa $merchantPrivateKeyInstance;
+    private Rsa $platformPublicKeyInstance;
+    private Rsa $platformCertificateInstance;
 
     public function __construct()
     {
         $config = require __DIR__ . '/../../config/payment.php';
         $this->appId = $config['wechat']['app_id'];
         $this->mchId = $config['wechat']['mch_id'];
-        $this->apiKey = $config['wechat']['api_key'];
+        $this->merchantCertificateSerial = $config['wechat']['mch_cert_serial_no'];
+        $this->platformCertificateSerial = $config['wechat']['platform_cert_serial_no'];
+        $this->platformPublicKeyId = $config['wechat']['platform_public_key_id'];
+
+        $this->merchantPrivateKeyInstance = Rsa::from($config['wechat']['merchant_private_key_path'], Rsa::KEY_TYPE_PUBLIC);
+        $this->platformPublicKeyInstance = Rsa::from($config['wechat']['platform_public_key_path'], Ras::KEY_TYPE_PUBLIC);
+        $this->platformCertificateInstance = Rsa::from($config['wechat']['platform_cert_path'], Ras::KEY_TYPE_PUBLIC);
+        // 构造一个 APIv3 客户端实例
+        $this->client = Builder::factory([
+            'mchid'      => $this->mchId,
+            'serial'     => $this->merchantCertificateSerial,
+            'privateKey' => $this->merchantPrivateKeyInstance,
+            'certs'      => [
+                $this->platformCertificateSerial => $this->platformCertificateInstance,
+                $this->platformPublicKeyId       => $this->platformPublicKeyInstance,
+            ],
+        ]);    
     }
 
     /**
@@ -45,6 +72,38 @@ class WechatPay
             'trade_type' => 'NATIVE',
         ];
 
+        try {
+            $resp = $instance->chain('v3/pay/transactions/native')->post(['json' => [
+                'mchid'         => $this->mchId,
+                'appid'         => $this->appId, 
+                'description'   => '智箱云网-订阅服务费',               // 商品描述
+                'out_trade_no'  => $orderInfo['out_trade_no'],    // 商户订单号
+                'notify_url'    => 'https://www.ucontainers.com.cn/wechatpay/pay_notify.php', // 通知地址
+                'amount'        => [
+                    'total'    => $orderInfo['total_fee'],      // 订单总金额, 单位为分
+                    'currency' => 'CNY', // 订单币种
+                ]
+            ]]);
+            
+            $data = json_decode((string) $resp->getBody(), true);
+            return $data;
+            
+            $codeUrl = $data['code_url'];
+            header('Content-Type: application/json');
+            echo json_encode(['code_url' => $codeUrl]);
+            
+        } catch(\Exception $e) {
+            // 进行异常捕获并进行错误判断处理
+            echo $e->getMessage(), PHP_EOL;
+            if ($e instanceof \GuzzleHttp\Exception\RequestException && $e->hasResponse()) {
+                $r = $e->getResponse();
+                echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
+                echo (string) $r->getBody(), PHP_EOL, PHP_EOL, PHP_EOL;
+            }
+            echo $e->getTraceAsString(), PHP_EOL;
+        }
+
+        /*
         // 生成签名（模拟）
         $params['sign'] = $this->makeSign($params);
 
@@ -55,6 +114,7 @@ class WechatPay
             'amount' => $orderInfo['total_fee'],
             'time' => time(),
         ]));
+        */
 
         return [
             'success' => true,
