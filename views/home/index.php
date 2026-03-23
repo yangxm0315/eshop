@@ -4,8 +4,8 @@ ob_start();
 ?>
 
 <div class="hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 4rem 2rem; text-align: center; border-radius: 8px; margin-bottom: 2rem;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">欢迎来到原生 PHP 电商</h1>
-    <p style="font-size: 1.2rem; opacity: 0.9;">无需框架，纯粹的原生 PHP 实现</p>
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">欢迎来到智箱云网商城</h1>
+    <p style="font-size: 1.2rem; opacity: 0.9;">集装箱物联网专家，集装箱追踪和管理</p>
     <a href="/products" class="btn" style="background: white; color: #667eea; margin-top: 1.5rem; display: inline-block;">浏览商品</a>
 </div>
 

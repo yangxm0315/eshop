@@ -111,7 +111,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; <?= date('Y') ?> 云网商城 - All rights reserved.</p>
+            <p>&copy; <?= date('Y') ?> 云网商城 - All rights reserved. <a href="https://beian.miit.gov.cn/" target="_blank">粤ICP备2024313768号</a></p>
         </div>
     </footer>
 </body>
