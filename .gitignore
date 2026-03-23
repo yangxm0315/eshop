@@ -1,21 +1,36 @@
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/public/uploads/*
-/storage/*.key
-/vendor
+# Native PHP E-commerce Project
+
+# Environment
 .env
 .env.backup
 .env.production
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
+
+# Uploaded files
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Database
+*.db
+*.sqlite
+*.sqlite-journal
+
+# MySQL config
+database/config.php
+
+# Logs
+*.log
+logs/*
+!logs/.gitkeep
+
+# IDE
 /.fleet
 /.idea
 /.vscode
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.cache

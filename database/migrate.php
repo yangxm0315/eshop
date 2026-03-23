@@ -52,6 +52,17 @@ $db->exec("CREATE TABLE IF NOT EXISTS products (
 )");
 echo "创建 products 表...\n";
 
+// 商品图片表
+$db->exec("CREATE TABLE IF NOT EXISTS product_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    sort INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+)");
+echo "创建 product_images 表...\n";
+
 // 购物车表
 $db->exec("CREATE TABLE IF NOT EXISTS cart (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

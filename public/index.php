@@ -28,6 +28,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// 加载辅助函数
+require BASE_PATH . '/src/Helpers/functions.php';
+
 // 加载路由文件
 require BASE_PATH . '/routes/web.php';
 require BASE_PATH . '/routes/auth.php';

@@ -51,6 +51,10 @@ class ProductController extends Controller
             return $this->response->status(404)->html('商品不存在');
         }
 
+        // 加载商品图片
+        $images = $db->query("SELECT image FROM product_images WHERE product_id = :product_id ORDER BY sort, id", ['product_id' => $id]);
+        $product['images'] = array_column($images, 'image');
+
         return $this->view('products/show', [
             'product' => $product,
             'user' => $this->user(),

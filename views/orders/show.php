@@ -79,9 +79,16 @@ ob_start();
         <div style="margin-top: 1.5rem;">
             <a href="/orders" class="btn">返回列表</a>
             <?php if ($order['status'] == 0): ?>
+                <a href="/payment/<?= $order['id'] ?>" class="btn btn-success">立即支付</a>
                 <form action="/orders/<?= $order['id'] ?>/cancel" method="POST" style="display: inline;">
                     <button type="submit" class="btn btn-danger">取消订单</button>
                 </form>
+            <?php elseif ($order['status'] == 1): ?>
+                <span class="btn" style="background: #6c757d; color: white; cursor: not-allowed;">待发货</span>
+            <?php elseif ($order['status'] == 2): ?>
+                <span class="btn" style="background: #17a2b8; color: white; cursor: not-allowed;">已发货</span>
+            <?php elseif ($order['status'] == 3): ?>
+                <span class="btn" style="background: #28a745; color: white; cursor: not-allowed;">已完成</span>
             <?php endif; ?>
         </div>
     </div>

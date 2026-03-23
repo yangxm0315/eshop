@@ -27,16 +27,14 @@ ob_start();
                     </td>
                     <td>¥<?= number_format($item['price'] / 100, 2) ?></td>
                     <td>
-                        <form action="/cart/<?= $item['id'] ?>" method="POST" style="display: flex; gap: 0.5rem;">
-                            <input type="hidden" name="_method" value="PUT">
+                        <form action="/cart/update/<?= $item['id'] ?>" method="POST" style="display: flex; gap: 0.5rem;">
                             <input type="number" name="quantity" value="<?= $item['quantity'] ?>" min="1" max="<?= $item['stock'] ?>" style="width: 60px; padding: 0.25rem; border: 1px solid #ddd; border-radius: 4px;">
                             <button type="submit" class="btn btn-primary" style="padding: 0.25rem 0.5rem;">更新</button>
                         </form>
                     </td>
-                    <td style="color: #dc3545; font-weight: bold;">¥<?= number_format($item['subtotal'] / 100, 2) ?></td>
+                    <td>¥<?= number_format($item['subtotal'] / 100, 2) ?></td>
                     <td>
-                        <form action="/cart/<?= $item['id'] ?>" method="POST" style="display: inline;">
-                            <input type="hidden" name="_method" value="DELETE">
+                        <form action="/cart/remove/<?= $item['id'] ?>" method="POST" style="display: inline;">
                             <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem;">删除</button>
                         </form>
                     </td>
@@ -52,7 +50,6 @@ ob_start();
         </div>
         <div style="display: flex; gap: 1rem;">
             <form action="/cart/clear" method="POST">
-                <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-danger">清空购物车</button>
             </form>
             <?php if (isset($_SESSION['user']) && $_SESSION['user']['id']): ?>

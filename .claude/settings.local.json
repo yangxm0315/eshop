@@ -26,7 +26,9 @@
       "Bash(for f:*)",
       "Bash(do)",
       "Bash(sed -i '' 's|include __DIR__ . ''''/../../layouts/admin\\\\.php''''|include BASE_PATH . ''''/views/layouts/admin.php''''|g' \"$f\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(find /Users/xiaoming/eshop/views -name *.blade.php)",
+      "Bash(find:*)"
     ]
   }
 }

@@ -1,38 +1,25 @@
 <?php
+/**
+ * 认证路由文件
+ */
 
-// 访客路由（已登录用户不能访问）
-Core\Router::get('/register', function() {
-    $session = Core\Session::getInstance();
-    if ($session->isLoggedIn()) {
-        $response = new Core\Response();
-        return $response->redirect('/');
-    }
-    $controller = new Controllers\Auth\RegisteredUserController();
-    return $controller->create();
-}, 'register');
+use Core\Router;
 
-Core\Router::post('/register', [Controllers\Auth\RegisteredUserController::class, 'store']);
+// 登录
+Router::get('/login', [\Controllers\Auth\AuthenticatedSessionController::class, 'create'], 'login');
+Router::post('/login', [\Controllers\Auth\AuthenticatedSessionController::class, 'store']);
 
-Core\Router::get('/login', function() {
-    $session = Core\Session::getInstance();
-    if ($session->isLoggedIn()) {
-        $response = new Core\Response();
-        return $response->redirect('/');
-    }
-    $controller = new Controllers\Auth\AuthenticatedSessionController();
-    return $controller->create();
-}, 'login');
+// 注册
+Router::get('/register', [\Controllers\Auth\RegisteredUserController::class, 'create'], 'register');
+Router::post('/register', [\Controllers\Auth\RegisteredUserController::class, 'store']);
 
-Core\Router::post('/login', [Controllers\Auth\AuthenticatedSessionController::class, 'store']);
+// 退出
+Router::post('/logout', [\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'], 'logout');
 
-Core\Router::get('/forgot-password', [Controllers\Auth\PasswordResetLinkController::class, 'create'], 'password.request');
-Core\Router::post('/forgot-password', [Controllers\Auth\PasswordResetLinkController::class, 'store']);
+// 忘记密码
+Router::get('/forgot-password', [\Controllers\Auth\PasswordResetLinkController::class, 'create'], 'forgot-password');
+Router::post('/forgot-password', [\Controllers\Auth\PasswordResetLinkController::class, 'store']);
 
-Core\Router::get('/reset-password/{token}', [Controllers\Auth\NewPasswordController::class, 'create'], 'password.reset');
-Core\Router::post('/reset-password', [Controllers\Auth\NewPasswordController::class, 'store']);
-
-// 需要登录的路由
-Core\Router::post('/logout', function() {
-    $controller = new Controllers\Auth\AuthenticatedSessionController();
-    return $controller->destroy();
-}, 'logout');
+// 重置密码
+Router::get('/reset-password/{token}', [\Controllers\Auth\NewPasswordController::class, 'create'], 'reset-password');
+Router::post('/reset-password', [\Controllers\Auth\NewPasswordController::class, 'store']);

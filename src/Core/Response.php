@@ -50,6 +50,16 @@ class Response
     }
 
     /**
+     * 设置 XML 响应
+     */
+    public function xml(array $data): self
+    {
+        $this->header('Content-Type', 'text/xml');
+        $this->body = arrayToXml($data);
+        return $this;
+    }
+
+    /**
      * 重定向
      */
     public function redirect(string $url): self

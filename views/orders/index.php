@@ -35,6 +35,7 @@ ob_start();
                     <td>
                         <a href="/orders/<?= $order['id'] ?>" class="btn btn-primary" style="padding: 0.25rem 0.5rem;">详情</a>
                         <?php if ($order['status'] == 0): ?>
+                            <a href="/payment/<?= $order['id'] ?>" class="btn btn-success" style="padding: 0.25rem 0.5rem;">支付</a>
                             <form action="/orders/<?= $order['id'] ?>/cancel" method="POST" style="display: inline;">
                                 <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem;">取消</button>
                             </form>

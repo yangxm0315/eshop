@@ -4,6 +4,42 @@
  */
 
 /**
+ * 数组转 XML
+ */
+function arrayToXml(array $data): string
+{
+    if (empty($data)) {
+        return '';
+    }
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    $xml .= '<xml>';
+    foreach ($data as $key => $value) {
+        if (is_array($value)) {
+            $xml .= '<' . $key . '>' . arrayToXml($value) . '</' . $key . '>';
+        } else {
+            $xml .= '<' . $key . '>' . (is_numeric($value) ? $value : '<![CDATA[' . $value . ']])') . '</' . $key . '>';
+        }
+    }
+    $xml .= '</xml>';
+    return $xml;
+}
+
+/**
+ * XML 转数组
+ */
+function xml2array(string $xml): array
+{
+    $data = [];
+    $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+    if ($xml === false) {
+        return [];
+    }
+    $data = json_decode(json_encode((array)$xml), true);
+    return $data ?: [];
+}
+
+/**
  * 重定向到指定 URL
  */
 function redirect(string $url): void

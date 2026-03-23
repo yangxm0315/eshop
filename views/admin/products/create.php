@@ -46,6 +46,12 @@ ob_start();
                 <label>主图</label>
                 <input type="file" name="main_image" accept="image/*">
             </div>
+
+            <div class="form-group">
+                <label>商品图片（可上传多张）</label>
+                <input type="file" name="images[]" accept="image/*" multiple>
+                <small style="color: #666;">可多选，按住 Ctrl/Cmd 选择多张图片</small>
+            </div>
             
             <div class="form-group">
                 <label>

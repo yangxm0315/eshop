@@ -8,6 +8,24 @@ use Core\Database;
 
 class ProfileController extends Controller
 {
+    public function index(): Response
+    {
+        $userId = $this->session->userId();
+        if (!$userId) {
+            $this->session->flash('error', '请先登录');
+            return $this->response->redirect('/login');
+        }
+
+        $db = Database::getInstance();
+        $user = $db->queryOne("SELECT * FROM users WHERE id = :id", ['id' => $userId]);
+        $addresses = $db->query("SELECT * FROM addresses WHERE user_id = :user_id ORDER BY is_default DESC, id DESC", ['user_id' => $userId]);
+
+        return $this->view('profile/edit', [
+            'user' => $user,
+            'addresses' => $addresses,
+        ]);
+    }
+
     public function edit(): Response
     {
         $userId = $this->session->userId();

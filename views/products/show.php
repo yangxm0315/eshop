@@ -5,7 +5,14 @@ ob_start();
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
     <div>
-        <img src="<?= htmlspecialchars($product['main_image'] ?: '/placeholder.jpg') ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 100%; border-radius: 8px;">
+        <img id="mainImage" src="<?= htmlspecialchars($product['main_image'] ?: '/placeholder.jpg') ?>" alt="<?= htmlspecialchars($product['name']) ?>" style="width: 100%; border-radius: 8px;">
+        <?php if (!empty($product['images'])): ?>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <?php foreach ($product['images'] as $img): ?>
+                    <img src="<?= htmlspecialchars($img) ?>" onclick="document.getElementById('mainImage').src = this.src" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid #ddd; cursor: pointer; border-radius: 4px;">
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
     
     <div>
@@ -20,7 +27,7 @@ ob_start();
         </div>
         
         <?php if ($product['stock'] > 0): ?>
-            <form action="/cart/<?= $product['id'] ?>/add" method="POST" style="display: flex; gap: 1rem; align-items: center;">
+            <form action="/cart/add/<?= $product['id'] ?>" method="POST" style="display: flex; gap: 1rem; align-items: center;">
                 <input type="number" name="quantity" value="1" min="1" max="<?= $product['stock'] ?>" style="width: 80px; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                 <button type="submit" class="btn btn-primary">加入购物车</button>
             </form>

@@ -10,7 +10,7 @@ ob_start();
 
 <div id="categoryForm" style="display: none; background: #fff; padding: 1.5rem; border-radius: 4px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
     <h3 style="margin-bottom: 1rem;">添加分类</h3>
-    <form action="/admin/categories" method="POST">
+    <form action="/admin/categories/store" method="POST">
         <div class="form-group">
             <label>分类名称</label>
             <input type="text" name="name" required>

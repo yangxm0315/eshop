@@ -6,7 +6,7 @@
 
 ```
 eshop/
-├── public/                 # 网站根目录
+├── public/                # 网站根目录
 │   ├── index.php          # 入口文件
 │   ├── .htaccess          # URL 重写规则
 │   └── uploads/           # 上传文件目录
