@@ -15,10 +15,10 @@ return [
     'database' => 'eshop',
 
     // 数据库用户名
-    'username' => 'eshop_user',
+    'username' => '',
 
     // 数据库密码
-    'password' => 'eShop@2026',
+    'password' => '',
 
     // 字符集
     'charset' => 'utf8mb4',
