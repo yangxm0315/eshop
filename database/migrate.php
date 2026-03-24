@@ -117,8 +117,11 @@ $db->exec("CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_image VARCHAR(255),
     quantity INTEGER NOT NULL,
     price INTEGER NOT NULL,
+    total_price INTEGER NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id),
     FOREIGN KEY (product_id) REFERENCES products(id)

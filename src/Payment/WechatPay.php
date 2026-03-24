@@ -13,38 +13,32 @@ use WeChatPay\Crypto\Rsa;
  */
 class WechatPay
 {
-    private Builder $client;
     private string $appId;
     private string $mchId;
-    private string $merchantCertificateSerial;
+    private string $notify_url;
+
+    private string $mchCerSerial;
     private string $platformCertificateSerial;
     private string $platformPublicKeyId;
-    private Rsa $merchantPrivateKeyInstance;
-    private Rsa $platformPublicKeyInstance;
-    private Rsa $platformCertificateInstance;
+
+    private string $mchPrivateKeyPath;
+    private string $platformCertificatePath;
+    private string $platformPublicKeyPath;
 
     public function __construct()
     {
         $config = require __DIR__ . '/../../config/payment.php';
         $this->appId = $config['wechat']['app_id'];
         $this->mchId = $config['wechat']['mch_id'];
-        $this->merchantCertificateSerial = $config['wechat']['mch_cert_serial_no'];
+        $this->notify_url = $config['wechat']['notify_url'];
+
+        $this->mchCerSerial = $config['wechat']['mch_cert_serial_no'];
         $this->platformCertificateSerial = $config['wechat']['platform_cert_serial_no'];
         $this->platformPublicKeyId = $config['wechat']['platform_public_key_id'];
 
-        $this->merchantPrivateKeyInstance = Rsa::from($config['wechat']['merchant_private_key_path'], Rsa::KEY_TYPE_PUBLIC);
-        $this->platformPublicKeyInstance = Rsa::from($config['wechat']['platform_public_key_path'], Ras::KEY_TYPE_PUBLIC);
-        $this->platformCertificateInstance = Rsa::from($config['wechat']['platform_cert_path'], Ras::KEY_TYPE_PUBLIC);
-        // 构造一个 APIv3 客户端实例
-        $this->client = Builder::factory([
-            'mchid'      => $this->mchId,
-            'serial'     => $this->merchantCertificateSerial,
-            'privateKey' => $this->merchantPrivateKeyInstance,
-            'certs'      => [
-                $this->platformCertificateSerial => $this->platformCertificateInstance,
-                $this->platformPublicKeyId       => $this->platformPublicKeyInstance,
-            ],
-        ]);    
+        $this->mchPrivateKeyPath = $config['wechat']['merchant_private_key_path'];
+        $this->platformCertificatePath = $config['wechat']['platform_cert_path'];
+        $this->platformPublicKeyPath = $config['wechat']['platform_public_key_path'];
     }
 
     /**
@@ -53,45 +47,42 @@ class WechatPay
      */
     public function createNativePay(array $orderInfo): array
     {
-        // 模拟微信支付的 code_url
-        // 实际项目中需要：
-        // 1. 构建统一下单请求参数
-        // 2. 签名
-        // 3. 调用微信 API
-        // 4. 解析返回的 code_url
+        // 从本地文件中加载「商户API私钥」，「商户API私钥」会用来生成请求的签名
+        $merchantPrivateKey = Rsa::from($this->mchPrivateKeyPath,Rsa::KEY_TYPE_PRIVATE);
+        $platformCertificateKey = Rsa::from($this->platformCertificatePath, Rsa::KEY_TYPE_PUBLIC);
+        $platformPublicKey = Rsa::from($this->platformPublicKeyPath, Rsa::KEY_TYPE_PUBLIC);
+        // 构造一个 APIv3 客户端实例
+        $client = Builder::factory([
+            'mchid'      => $this->mchId,
+            'serial'     => $this->mchCerSerial,
+            'privateKey' => $merchantPrivateKey,
+            'certs'      => [
+                $this->platformCertificateSerial => $platformCertificateKey,
+                $this->platformPublicKeyId => $platformPublicKey,
+            ],
+        ]);
 
-        $params = [
-            'appid' => $this->appId,
-            'mch_id' => $this->mchId,
-            'nonce_str' => $this->createNonceStr(),
-            'body' => $orderInfo['body'],
-            'out_trade_no' => $orderInfo['out_trade_no'],
-            'total_fee' => $orderInfo['total_fee'],
-            'spbill_create_ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
-            'notify_url' => $this->getNotifyUrl(),
-            'trade_type' => 'NATIVE',
-        ];
-
+        // 发送请求, 统一下单
         try {
-            $resp = $instance->chain('v3/pay/transactions/native')->post(['json' => [
+            $resp = $client->chain('v3/pay/transactions/native')->post(['json' => [
                 'mchid'         => $this->mchId,
                 'appid'         => $this->appId, 
-                'description'   => '智箱云网-订阅服务费',               // 商品描述
-                'out_trade_no'  => $orderInfo['out_trade_no'],    // 商户订单号
-                'notify_url'    => 'https://www.ucontainers.com.cn/wechatpay/pay_notify.php', // 通知地址
+                'description'   => '智箱云网-订阅服务费',              // 商品描述
+                'out_trade_no'  => $orderInfo['out_trade_no'],      // 商户订单号
+                'notify_url'    => $this->notify_url,               // 通知地址
                 'amount'        => [
-                    'total'    => $orderInfo['total_fee'],      // 订单总金额, 单位为分
-                    'currency' => 'CNY', // 订单币种
+                    'total'    => $orderInfo['total_fee'],          // 订单总金额, 单位为分
+                    'currency' => 'CNY',                            // 订单币种
                 ]
             ]]);
-            
+
             $data = json_decode((string) $resp->getBody(), true);
-            return $data;
-            
             $codeUrl = $data['code_url'];
-            header('Content-Type: application/json');
-            echo json_encode(['code_url' => $codeUrl]);
-            
+            return [
+                'success' => true,
+                'code_url' => $codeUrl,
+                'trade_no' => $orderInfo['out_trade_no'],
+            ];
         } catch(\Exception $e) {
             // 进行异常捕获并进行错误判断处理
             echo $e->getMessage(), PHP_EOL;
@@ -102,25 +93,14 @@ class WechatPay
             }
             echo $e->getTraceAsString(), PHP_EOL;
         }
-
         /*
-        // 生成签名（模拟）
-        $params['sign'] = $this->makeSign($params);
-
-        // 模拟返回的 code_url
-        // 真实场景：$result = $this->callWxApi($params);
+        // 模拟微信支付的 code_url
         $codeUrl = 'wxp://f2f' . base64_encode(json_encode([
             'order_no' => $orderInfo['out_trade_no'],
             'amount' => $orderInfo['total_fee'],
             'time' => time(),
         ]));
         */
-
-        return [
-            'success' => true,
-            'code_url' => $codeUrl,
-            'trade_no' => $orderInfo['out_trade_no'],
-        ];
     }
 
     /**
