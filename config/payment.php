@@ -6,15 +6,15 @@
 return [
     'wechat' => [
         // 微信公众号 AppID
-        'app_id' => 'wxeb087c17e5ca466d',
+        'app_id' => '',
         // 微信支付商户号
-        'mch_id' => '1711114086',
+        'mch_id' => '',
         // 「商户API证书」的「证书序列号」
-        'mch_cert_serial_no' => '52EBADB1C74379779C1A061DD53BCEA87EBD9B82',
+        'mch_cert_serial_no' => '',
         // 「微信支付平台证书」的「平台证书序列号, 可以从「微信支付平台证书」文件解析，也可以在 商户平台 -> 账户中心 -> API安全 查询到
-        'platform_cert_serial_no' => '7B92D53AE1C7A59A23000626E63D396E53E73B32',
+        'platform_cert_serial_no' => '',
         // 「微信支付公钥」的「微信支付公钥ID, 需要在 商户平台 -> 账户中心 -> API安全 查询
-        'platform_public_key_id' => 'PUB_KEY_ID_0117111140862025031900389200002407',
+        'platform_public_key_id' => '',
         //「微信支付公钥」
         'platform_public_key_path' => 'file://pub_key.pem',
         // 商户私钥
@@ -22,7 +22,7 @@ return [
         // 「微信支付平台证书」，用来验证微信支付应答的签名
         'platform_cert_path' => 'file://certificate.pem',
         // 支付结果回调地址
-        'notify_url' => 'https://www.ucontainers.cn/payment/wechat/notify',
+        'notify_url' => 'https://www.*****.cn/payment/wechat/notify',
     ],
 
     'alipay' => [
