@@ -13,8 +13,8 @@ return [
             'host' => 'localhost',
             'port' => 3306,
             'dbname' => 'eshop',
-            'username' => 'eshop_user',
-            'password' => 'eShop@2026',
+            'username' => '',
+            'password' => '',
             'charset' => 'utf8mb4',
         ]
     ],
