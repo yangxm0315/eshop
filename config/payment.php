@@ -16,13 +16,13 @@ return [
         // 「微信支付公钥」的「微信支付公钥ID, 需要在 商户平台 -> 账户中心 -> API安全 查询
         'platform_public_key_id' => 'PUB_KEY_ID_0117111140862025031900389200002407',
         //「微信支付公钥」
-        'platform_public_key_path' => 'file://wechatpayplatform/pub_key.pem',
+        'platform_public_key_path' => 'file://pub_key.pem',
         // 商户私钥
-        'merchant_private_key_path' => 'file://1711114086_cert/apiclient_key.pem',
+        'merchant_private_key_path' => 'file://apiclient_key.pem',
         // 「微信支付平台证书」，用来验证微信支付应答的签名
-        'platform_cert_path' => 'file://wechatpayplatform/certificate.pem',
+        'platform_cert_path' => 'file://certificate.pem',
         // 支付结果回调地址
-        'notify_url' => 'http://localhost:8000/payment/wechat/notify',
+        'notify_url' => 'https://www.ucontainers.cn/payment/wechat/notify',
     ],
 
     'alipay' => [

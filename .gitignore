@@ -14,7 +14,8 @@ public/uploads/*
 *.sqlite
 *.sqlite-journal
 
-# MySQL config
+# config
+config/*
 
 # Logs
 *.log
