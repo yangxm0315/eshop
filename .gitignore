@@ -17,6 +17,10 @@ public/uploads/*
 # config
 config/*
 
+# Payment
+src/Payment/*
+!src/Payment/WechatPay.php
+
 # Logs
 *.log
 logs/*
